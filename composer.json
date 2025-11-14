@@ -1,0 +1,13 @@
+{
+    "name": "your-namespace/your-package",
+    "description": "Ein Paket zur Attribut-basierten Validierung von Objekten.",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Idalabs\\Validation\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    }
+} 

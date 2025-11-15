@@ -4,11 +4,17 @@ namespace Javeh\ClassValidator;
 
 use ReflectionAttribute;
 use ReflectionClass;
-use ReflectionProperty;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Contracts\Translation;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 class Validation
 {
+    public function __construct(?Translation $translation = null)
+    {
+        TranslationManager::ensure($translation);
+    }
+
     public function validate(object $object): array
     {
         $errors = [];
@@ -31,4 +37,4 @@ class Validation
 
         return $errors;
     }
-} 
+}

@@ -15,7 +15,7 @@ class Url implements ValidationAttribute
 
     public function __construct(?string $message = null)
     {
-        $this->initializeErrorMessage($message, "Der Wert muss eine gültige URL sein");
+        $this->initializeErrorMessage($message, 'validation.url');
     }
 
     public function validate(mixed $value): bool
@@ -28,7 +28,7 @@ class Url implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage("Der Wert muss eine gültige URL sein");
+        $this->replaceErrorMessage('validation.url');
         return false;
     }
 

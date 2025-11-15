@@ -23,7 +23,9 @@ class Instance implements ValidationAttribute
             );
         }
 
-        $this->initializeErrorMessage($message, "Der Wert muss eine Instanz von {$className} sein");
+        $this->initializeErrorMessage($message, 'validation.instance.required', [
+            'expected' => $className,
+        ]);
     }
 
     public function validate(mixed $value): bool
@@ -32,16 +34,21 @@ class Instance implements ValidationAttribute
             return true;
         }
 
+        if ($value === null) {
+            return true;
+        }
+
         if (!is_object($value)) {
-            $this->replaceErrorMessage("Der Wert muss ein Objekt sein");
+            $this->replaceErrorMessage('validation.instance.object');
             return false;
         }
 
         if (!$value instanceof $this->className) {
             $actualClass = get_class($value);
-            $this->replaceErrorMessage(
-                "Der Wert ist eine Instanz von {$actualClass}, muss aber eine Instanz von {$this->className} sein"
-            );
+            $this->replaceErrorMessage('validation.instance.type', [
+                'actual' => $actualClass,
+                'expected' => $this->className,
+            ]);
             return false;
         }
 

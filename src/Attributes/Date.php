@@ -28,10 +28,12 @@ class Date implements ValidationAttribute
         $this->maxDate = $max ? $this->createBoundaryDate($max, 'Maximaldatum') : null;
 
         if ($this->minDate && $this->maxDate && $this->minDate > $this->maxDate) {
-            throw new \InvalidArgumentException('Das Mindestdatum darf nicht nach dem Maximaldatum liegen');
+            throw new \InvalidArgumentException('The minimum date may not be after the maximum date.');
         }
 
-        $this->initializeErrorMessage($message, $this->generateDefaultMessage());
+        $this->initializeErrorMessage($message, 'validation.date.invalid', [
+            'format' => $this->format,
+        ]);
     }
 
     public function validate(mixed $value): bool
@@ -41,42 +43,31 @@ class Date implements ValidationAttribute
         }
 
         if (!is_string($value)) {
-            $this->replaceErrorMessage("Der Wert muss ein Datum im Format {$this->format} sein");
+            $this->replaceErrorMessage('validation.date.type', ['format' => $this->format]);
             return false;
         }
 
         $date = DateTime::createFromFormat($this->format, $value);
         if (!$date || $date->format($this->format) !== $value) {
-            $this->replaceErrorMessage("Der Wert muss ein gültiges Datum im Format {$this->format} sein");
+            $this->replaceErrorMessage('validation.date.invalid', ['format' => $this->format]);
             return false;
         }
 
         if ($this->minDate && $date < $this->minDate) {
-            $this->replaceErrorMessage("Das Datum muss nach dem {$this->minDate->format($this->format)} liegen");
+            $this->replaceErrorMessage('validation.date.after', [
+                'date' => $this->minDate->format($this->format),
+            ]);
             return false;
         }
 
         if ($this->maxDate && $date > $this->maxDate) {
-            $this->replaceErrorMessage("Das Datum muss vor dem {$this->maxDate->format($this->format)} liegen");
+            $this->replaceErrorMessage('validation.date.before', [
+                'date' => $this->maxDate->format($this->format),
+            ]);
             return false;
         }
 
         return true;
-    }
-
-    private function generateDefaultMessage(): string
-    {
-        $constraints = ["ein gültiges Datum im Format {$this->format} sein"];
-        
-        if ($this->minDate && $this->maxDate) {
-            $constraints[] = "zwischen {$this->minDate->format($this->format)} und {$this->maxDate->format($this->format)} liegen";
-        } elseif ($this->minDate) {
-            $constraints[] = "nach dem {$this->minDate->format($this->format)} liegen";
-        } elseif ($this->maxDate) {
-            $constraints[] = "vor dem {$this->maxDate->format($this->format)} liegen";
-        }
-
-        return "Das Datum muss " . implode(" und ", $constraints);
     }
 
     public function getErrorMessage(): string
@@ -87,14 +78,14 @@ class Date implements ValidationAttribute
     private function assertValidFormat(string $format): string
     {
         if (trim($format) === '') {
-            throw new \InvalidArgumentException('Das Datumsformat darf nicht leer sein');
+            throw new \InvalidArgumentException('Date format may not be empty.');
         }
 
         $probeValue = (new DateTime('now'))->format($format);
         $probeDate = DateTime::createFromFormat($format, $probeValue);
 
         if (!$probeDate || $probeDate->format($format) !== $probeValue) {
-            throw new \InvalidArgumentException("Ungültiges Datumsformat: {$format}");
+            throw new \InvalidArgumentException("Invalid date format: {$format}");
         }
 
         return $format;
@@ -105,7 +96,7 @@ class Date implements ValidationAttribute
         $date = DateTime::createFromFormat($this->format, $value);
 
         if (!$date || $date->format($this->format) !== $value) {
-            throw new \InvalidArgumentException("Ungültiges {$label}: {$value}");
+            throw new \InvalidArgumentException("Invalid {$label}: {$value}");
         }
 
         return $date;

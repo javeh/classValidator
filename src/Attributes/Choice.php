@@ -25,7 +25,11 @@ class Choice implements ValidationAttribute
         }
         
         $this->choices = array_values($choices);
-        $this->initializeErrorMessage($message, $this->generateDefaultMessage());
+        $this->initializeErrorMessage(
+            $message,
+            $this->multiple ? 'validation.choice.multiple' : 'validation.choice.single',
+            ['choices' => $this->formatChoices()]
+        );
     }
 
     public function validate(mixed $value): bool
@@ -36,7 +40,7 @@ class Choice implements ValidationAttribute
 
         if ($this->multiple) {
             if (!is_array($value)) {
-                $this->replaceErrorMessage("Der Wert muss ein Array sein");
+                $this->replaceErrorMessage('validation.choice.array');
                 return false;
             }
 
@@ -53,36 +57,25 @@ class Choice implements ValidationAttribute
 
     private function validateSingleValue(mixed $value): bool
     {
-        $found = false;
         foreach ($this->choices as $choice) {
             if ($this->strict ? $value === $choice : $value == $choice) {
-                $found = true;
-                break;
+                return true;
             }
         }
 
-        if (!$found) {
-            $choicesString = implode(', ', array_map(
-                fn($v) => is_string($v) ? "'{$v}'" : (string)$v,
-                $this->choices
-            ));
-            $this->replaceErrorMessage("Der Wert muss einer der folgenden sein: {$choicesString}");
-            return false;
-        }
-
-        return true;
+        $this->replaceErrorMessage(
+            $this->multiple ? 'validation.choice.multiple' : 'validation.choice.single',
+            ['choices' => $this->formatChoices()]
+        );
+        return false;
     }
 
-    private function generateDefaultMessage(): string
+    private function formatChoices(): string
     {
-        $choicesString = implode(', ', array_map(
+        return implode(', ', array_map(
             fn($v) => is_string($v) ? "'{$v}'" : (string)$v,
             $this->choices
         ));
-        
-        return $this->multiple 
-            ? "Die Werte müssen aus folgenden Möglichkeiten gewählt werden: {$choicesString}"
-            : "Der Wert muss einer der folgenden sein: {$choicesString}";
     }
 
     public function getErrorMessage(): string

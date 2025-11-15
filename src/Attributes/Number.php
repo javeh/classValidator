@@ -57,11 +57,7 @@ class Number implements ValidationAttribute
             $constraints[] = "ein Vielfaches von {$step} sein";
         }
 
-        $default = empty($constraints)
-            ? "Der Wert muss eine gültige Zahl sein"
-            : "Die Zahl muss " . implode(" und ", $constraints);
-
-        $this->initializeErrorMessage($message, $default);
+        $this->initializeErrorMessage($message, 'validation.number.type');
     }
 
     public function validate(mixed $value): bool
@@ -72,7 +68,7 @@ class Number implements ValidationAttribute
 
         // Prüfe ob es eine Zahl ist
         if (!is_numeric($value)) {
-            $this->replaceErrorMessage("Der Wert muss eine Zahl sein");
+            $this->replaceErrorMessage('validation.number.type');
             return false;
         }
 
@@ -80,27 +76,27 @@ class Number implements ValidationAttribute
 
         // Ganzzahl-Prüfung
         if ($this->integer && !is_int($number) && $number != (int)$number) {
-            $this->replaceErrorMessage("Der Wert muss eine Ganzzahl sein");
+            $this->replaceErrorMessage('validation.number.integer');
             return false;
         }
 
         // Vorzeichen-Prüfung
         if ($this->positive && $number <= 0) {
-            $this->replaceErrorMessage("Die Zahl muss positiv sein");
+            $this->replaceErrorMessage('validation.number.positive');
             return false;
         }
         if ($this->negative && $number >= 0) {
-            $this->replaceErrorMessage("Die Zahl muss negativ sein");
+            $this->replaceErrorMessage('validation.number.negative');
             return false;
         }
 
         // Bereichs-Prüfung
         if ($this->min !== null && $number < $this->min) {
-            $this->replaceErrorMessage("Die Zahl muss größer oder gleich {$this->min} sein");
+            $this->replaceErrorMessage('validation.number.min', ['min' => $this->min]);
             return false;
         }
         if ($this->max !== null && $number > $this->max) {
-            $this->replaceErrorMessage("Die Zahl muss kleiner oder gleich {$this->max} sein");
+            $this->replaceErrorMessage('validation.number.max', ['max' => $this->max]);
             return false;
         }
 
@@ -109,7 +105,7 @@ class Number implements ValidationAttribute
             $remainder = fmod($number, $this->step);
             // Berücksichtige Floating-Point-Ungenauigkeiten
             if (abs($remainder) > 0.000001 && abs($remainder - $this->step) > 0.000001) {
-                $this->replaceErrorMessage("Die Zahl muss ein Vielfaches von {$this->step} sein");
+                $this->replaceErrorMessage('validation.number.step', ['step' => $this->step]);
                 return false;
             }
         }

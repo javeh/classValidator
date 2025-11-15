@@ -18,7 +18,10 @@ class Range implements ValidationAttribute
         private readonly int|float $max,
         ?string $message = null
     ) {
-        $this->initializeErrorMessage($message, "Der Wert muss zwischen {$this->min} und {$this->max} liegen");
+        $this->initializeErrorMessage($message, 'validation.range', [
+            'min' => $this->min,
+            'max' => $this->max,
+        ]);
     }
 
     public function validate(mixed $value): bool
@@ -27,11 +30,18 @@ class Range implements ValidationAttribute
             return true;
         }
 
+        if ($value === null) {
+            return true;
+        }
+
         if (is_numeric($value) && $value >= $this->min && $value <= $this->max) {
             return true;
         }
 
-        $this->replaceErrorMessage("Der Wert muss zwischen {$this->min} und {$this->max} liegen");
+        $this->replaceErrorMessage('validation.range', [
+            'min' => $this->min,
+            'max' => $this->max,
+        ]);
         return false;
     }
 

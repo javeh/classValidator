@@ -15,7 +15,7 @@ class Email implements ValidationAttribute
     
     public function __construct(?string $message = null)
     {
-        $this->initializeErrorMessage($message, "Der Wert muss eine gültige E-Mail-Adresse sein");
+        $this->initializeErrorMessage($message, 'validation.email');
     }
 
     public function validate(mixed $value): bool
@@ -28,7 +28,7 @@ class Email implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage("Der Wert muss eine gültige E-Mail-Adresse sein");
+        $this->replaceErrorMessage('validation.email');
         return false;
     }
 

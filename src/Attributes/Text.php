@@ -25,28 +25,7 @@ class Text implements ValidationAttribute
             $this->lengthValidator = new Length(length: $length, min: $min, max: $max);
         }
 
-        // Standard-Fehlermeldung basierend auf den gesetzten Einschränkungen
-        $constraints = [];
-        
-        if ($length !== null) {
-            $constraints[] = "exakt {$length} Zeichen lang sein";
-        }
-        if ($min !== null && $max !== null) {
-            $constraints[] = "zwischen {$min} und {$max} Zeichen lang sein";
-        } elseif ($min !== null) {
-            $constraints[] = "mindestens {$min} Zeichen lang sein";
-        } elseif ($max !== null) {
-            $constraints[] = "höchstens {$max} Zeichen lang sein";
-        }
-        if ($pattern !== null) {
-            $constraints[] = "dem vorgegebenen Muster entsprechen";
-        }
-
-        $default = empty($constraints)
-            ? "Der Text muss gültig sein"
-            : "Der Text muss " . implode(" und ", $constraints);
-
-        $this->initializeErrorMessage($message, $default);
+        $this->initializeErrorMessage($message, 'validation.text.valid');
     }
 
     public function validate(mixed $value): bool
@@ -56,18 +35,18 @@ class Text implements ValidationAttribute
         }
 
         if (!is_string($value)) {
-            $this->replaceErrorMessage("Der Wert muss ein Text sein");
+            $this->replaceErrorMessage('validation.text.type');
             return false;
         }
 
         if ($this->lengthValidator !== null && !$this->lengthValidator->validate($value)) {
-            $this->replaceErrorMessage($this->lengthValidator->getErrorMessage());
+            $this->adoptErrorMessage($this->lengthValidator->getErrorMessage());
             return false;
         }
 
         // Prüfung des Regex-Patterns
         if ($this->pattern !== null && !preg_match($this->pattern, $value)) {
-            $this->replaceErrorMessage("Der Text entspricht nicht dem erforderlichen Muster");
+            $this->replaceErrorMessage('validation.text.pattern');
             return false;
         }
 

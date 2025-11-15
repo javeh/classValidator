@@ -15,7 +15,7 @@ class NotEmpty implements ValidationAttribute
 
     public function __construct(?string $message = null)
     {
-        $this->initializeErrorMessage($message, "Der Wert darf nicht leer sein");
+        $this->initializeErrorMessage($message, 'validation.not_empty');
     }
 
     public function validate(mixed $value): bool
@@ -24,7 +24,7 @@ class NotEmpty implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage("Der Wert darf nicht leer sein");
+        $this->replaceErrorMessage('validation.not_empty');
         return false;
     }
 

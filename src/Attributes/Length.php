@@ -22,19 +22,11 @@ class Length implements ValidationAttribute
     ) {
         $this->exactLength = $length;
         
-        if ($length !== null) {
-            $defaultMessage = "Der Wert muss exakt {$length} Einheiten lang sein";
-        } elseif ($min !== null && $max !== null) {
-            $defaultMessage = "Der Wert muss zwischen {$min} und {$max} Einheiten lang sein";
-        } elseif ($min !== null) {
-            $defaultMessage = "Der Wert muss mindestens {$min} Einheiten lang sein";
-        } elseif ($max !== null) {
-            $defaultMessage = "Der Wert darf höchstens {$max} Einheiten lang sein";
-        } else {
+        if ($length === null && $min === null && $max === null) {
             throw new \InvalidArgumentException('Mindestens einer der Parameter length, min oder max muss gesetzt sein');
         }
 
-        $this->initializeErrorMessage($message, $defaultMessage);
+        $this->initializeErrorMessage($message, 'validation.length.type');
     }
 
     public function validate(mixed $value): bool
@@ -45,7 +37,7 @@ class Length implements ValidationAttribute
 
         $length = $this->getLength($value);
         if ($length === null) {
-            $this->replaceErrorMessage("Der Wert muss ein Text, ein Array oder eine zählbare Sammlung sein");
+            $this->replaceErrorMessage('validation.length.type');
             return false;
         }
 
@@ -91,30 +83,48 @@ class Length implements ValidationAttribute
         $message = null;
 
         if (is_string($value)) {
-            $message = match($type) {
-                'exact' => "Der Text muss exakt {$this->exactLength} Zeichen lang sein",
-                'min' => "Der Text muss mindestens {$this->min} Zeichen lang sein",
-                'max' => "Der Text darf höchstens {$this->max} Zeichen lang sein",
+            $key = match($type) {
+                'exact' => 'validation.length.text_exact',
+                'min' => 'validation.length.text_min',
+                'max' => 'validation.length.text_max',
                 default => null,
             };
+            $context = [
+                'exact' => $this->exactLength,
+                'min' => $this->min,
+                'max' => $this->max,
+            ];
         } elseif (is_array($value)) {
-            $message = match($type) {
-                'exact' => "Das Array muss exakt {$this->exactLength} Elemente enthalten",
-                'min' => "Das Array muss mindestens {$this->min} Elemente enthalten",
-                'max' => "Das Array darf höchstens {$this->max} Elemente enthalten",
+            $key = match($type) {
+                'exact' => 'validation.length.array_exact',
+                'min' => 'validation.length.array_min',
+                'max' => 'validation.length.array_max',
                 default => null,
             };
+            $context = [
+                'exact' => $this->exactLength,
+                'min' => $this->min,
+                'max' => $this->max,
+            ];
         } elseif ($value instanceof \Countable) {
-            $message = match($type) {
-                'exact' => "Die Sammlung muss exakt {$this->exactLength} Elemente enthalten",
-                'min' => "Die Sammlung muss mindestens {$this->min} Elemente enthalten",
-                'max' => "Die Sammlung darf höchstens {$this->max} Elemente enthalten",
+            $key = match($type) {
+                'exact' => 'validation.length.collection_exact',
+                'min' => 'validation.length.collection_min',
+                'max' => 'validation.length.collection_max',
                 default => null,
             };
+            $context = [
+                'exact' => $this->exactLength,
+                'min' => $this->min,
+                'max' => $this->max,
+            ];
+        } else {
+            $key = null;
+            $context = [];
         }
 
-        if ($message !== null) {
-            $this->replaceErrorMessage($message);
+        if ($key !== null) {
+            $this->replaceErrorMessage($key, array_filter($context, fn($value) => $value !== null));
         }
     }
 

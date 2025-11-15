@@ -18,7 +18,7 @@ class Regex implements ValidationAttribute
         ?string $message = null
     ) {
         $this->assertPatternIsValid($pattern);
-        $this->initializeErrorMessage($message, "Der Wert entspricht nicht dem erforderlichen Muster");
+        $this->initializeErrorMessage($message, 'validation.regex');
     }
 
     public function validate(mixed $value): bool
@@ -31,7 +31,7 @@ class Regex implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage("Der Wert entspricht nicht dem erforderlichen Muster");
+        $this->replaceErrorMessage('validation.regex');
         return false;
     }
 
@@ -49,7 +49,7 @@ class Regex implements ValidationAttribute
         restore_error_handler();
 
         if (preg_last_error() !== PREG_NO_ERROR) {
-            throw new \InvalidArgumentException("Ungültiges Regex-Pattern: {$pattern}");
+            throw new \InvalidArgumentException("Invalid regex pattern: {$pattern}");
         }
     }
 }

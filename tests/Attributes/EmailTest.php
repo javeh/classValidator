@@ -1,0 +1,23 @@
+<?php
+
+namespace Javeh\ClassValidator\Tests\Attributes;
+
+use Javeh\ClassValidator\Attributes\Email;
+use Javeh\ClassValidator\Tests\TestCase;
+
+class EmailTest extends TestCase
+{
+    public function testAcceptsValidEmail(): void
+    {
+        $validator = new Email();
+        $this->assertTrue($validator->validate('user@example.com'));
+    }
+
+    public function testRejectsInvalidEmail(): void
+    {
+        $validator = new Email();
+
+        $this->assertFalse($validator->validate('not-an-email'));
+        $this->assertSame('The value must be a valid email address.', $validator->getErrorMessage());
+    }
+}

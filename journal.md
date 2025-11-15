@@ -6,3 +6,4 @@
 - [x] Text-/Length-Zuständigkeiten geklärt: Text nutzt nun intern den Length-Validator und behält seine Parameter, wodurch beide Klassen dieselbe Längenlogik teilen.
 - [x] Zusätzliche Parameter-Validierungen ergänzt (Regex-Pattern, Number step/min/max, Date-Format) und im Regelwerk dokumentiert.
 - [x] i18n eingeführt: Übersetzungs-Interface, ArrayTranslation mit 25 Sprachen, automatischer Fallback und Integration sämtlicher Validatoren implementiert.
+- [x] PHPUnit Setup + Tests: PHPUnit konfiguriert und für jeden Validator (Choice, Date, Email, Instance, Length, NotEmpty, Number, Range, Regex, Text, Url) aussagekräftige Unit-Tests geschrieben.

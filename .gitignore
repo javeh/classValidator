@@ -5,3 +5,4 @@ node_modules/
 dist/
 .env
 composer.lock
+.phpunit.result.cache

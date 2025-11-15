@@ -20,6 +20,10 @@ class Url implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (filter_var($value, FILTER_VALIDATE_URL)) {
             return true;
         }

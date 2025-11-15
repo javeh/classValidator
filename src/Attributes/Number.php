@@ -58,6 +58,10 @@ class Number implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         // Prüfe ob es eine Zahl ist
         if (!is_numeric($value)) {
             $this->replaceErrorMessage("Der Wert muss eine Zahl sein");

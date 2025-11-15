@@ -49,6 +49,10 @@ class Text implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (!is_string($value)) {
             $this->replaceErrorMessage("Der Wert muss ein Text sein");
             return false;

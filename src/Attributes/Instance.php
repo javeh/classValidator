@@ -28,6 +28,10 @@ class Instance implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (!is_object($value)) {
             $this->replaceErrorMessage("Der Wert muss ein Objekt sein");
             return false;

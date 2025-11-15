@@ -39,6 +39,10 @@ class Length implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         $length = $this->getLength($value);
         if ($length === null) {
             $this->replaceErrorMessage("Der Wert muss ein Text, ein Array oder eine zählbare Sammlung sein");

@@ -30,6 +30,10 @@ class Choice implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if ($this->multiple) {
             if (!is_array($value)) {
                 $this->replaceErrorMessage("Der Wert muss ein Array sein");

@@ -23,6 +23,10 @@ class Range implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (is_numeric($value) && $value >= $this->min && $value <= $this->max) {
             return true;
         }

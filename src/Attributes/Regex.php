@@ -22,6 +22,10 @@ class Regex implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (is_string($value) && preg_match($this->pattern, $value)) {
             return true;
         }

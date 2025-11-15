@@ -41,6 +41,10 @@ class Date implements ValidationAttribute
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         if (!is_string($value)) {
             $this->replaceErrorMessage("Der Wert muss ein Datum im Format {$this->format} sein");
             return false;

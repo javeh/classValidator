@@ -15,7 +15,7 @@ class Text implements ValidationAttribute
     private ?int $exactLength;
 
     public function __construct(
-        int $length = null,
+        ?int $length = null,
         private readonly ?int $min = null,
         private readonly ?int $max = null,
         private readonly ?string $pattern = null,
@@ -41,8 +41,8 @@ class Text implements ValidationAttribute
         }
 
         $default = empty($constraints)
-            ? "Der Wert muss ein gültiger String sein"
-            : "Der String muss " . implode(" und ", $constraints);
+            ? "Der Text muss gültig sein"
+            : "Der Text muss " . implode(" und ", $constraints);
 
         $this->initializeErrorMessage($message, $default);
     }
@@ -50,31 +50,31 @@ class Text implements ValidationAttribute
     public function validate(mixed $value): bool
     {
         if (!is_string($value)) {
-            $this->replaceErrorMessage("Der Wert muss ein String sein");
+            $this->replaceErrorMessage("Der Wert muss ein Text sein");
             return false;
         }
 
         // Prüfung der exakten Länge
         if ($this->exactLength !== null && strlen($value) !== $this->exactLength) {
-            $this->replaceErrorMessage("Der String muss exakt {$this->exactLength} Zeichen lang sein");
+            $this->replaceErrorMessage("Der Text muss exakt {$this->exactLength} Zeichen lang sein");
             return false;
         }
 
         // Prüfung der Mindestlänge
         if ($this->min !== null && strlen($value) < $this->min) {
-            $this->replaceErrorMessage("Der String muss mindestens {$this->min} Zeichen lang sein");
+            $this->replaceErrorMessage("Der Text muss mindestens {$this->min} Zeichen lang sein");
             return false;
         }
 
         // Prüfung der Maximallänge
         if ($this->max !== null && strlen($value) > $this->max) {
-            $this->replaceErrorMessage("Der String darf höchstens {$this->max} Zeichen lang sein");
+            $this->replaceErrorMessage("Der Text darf höchstens {$this->max} Zeichen lang sein");
             return false;
         }
 
         // Prüfung des Regex-Patterns
         if ($this->pattern !== null && !preg_match($this->pattern, $value)) {
-            $this->replaceErrorMessage("Der String entspricht nicht dem erforderlichen Muster");
+            $this->replaceErrorMessage("Der Text entspricht nicht dem erforderlichen Muster");
             return false;
         }
 

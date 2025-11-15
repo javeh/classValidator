@@ -41,7 +41,7 @@ class Length implements ValidationAttribute
     {
         $length = $this->getLength($value);
         if ($length === null) {
-            $this->replaceErrorMessage("Der Wert muss ein String, Array oder Countable sein");
+            $this->replaceErrorMessage("Der Wert muss ein Text, ein Array oder eine zählbare Sammlung sein");
             return false;
         }
 
@@ -88,9 +88,9 @@ class Length implements ValidationAttribute
 
         if (is_string($value)) {
             $message = match($type) {
-                'exact' => "Der String muss exakt {$this->exactLength} Zeichen lang sein",
-                'min' => "Der String muss mindestens {$this->min} Zeichen lang sein",
-                'max' => "Der String darf höchstens {$this->max} Zeichen lang sein",
+                'exact' => "Der Text muss exakt {$this->exactLength} Zeichen lang sein",
+                'min' => "Der Text muss mindestens {$this->min} Zeichen lang sein",
+                'max' => "Der Text darf höchstens {$this->max} Zeichen lang sein",
                 default => null,
             };
         } elseif (is_array($value)) {

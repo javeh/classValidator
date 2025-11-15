@@ -4,11 +4,14 @@ namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
 use DateTime;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Date implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
     private ?DateTime $minDate;
     private ?DateTime $maxDate;
@@ -33,29 +36,29 @@ class Date implements ValidationAttribute
             throw new \InvalidArgumentException('Das Mindestdatum darf nicht nach dem Maximaldatum liegen');
         }
 
-        $this->errorMessage = $message ?? $this->generateDefaultMessage();
+        $this->initializeErrorMessage($message, $this->generateDefaultMessage());
     }
 
     public function validate(mixed $value): bool
     {
         if (!is_string($value)) {
-            $this->errorMessage = "Der Wert muss ein Datum im Format {$this->format} sein";
+            $this->replaceErrorMessage("Der Wert muss ein Datum im Format {$this->format} sein");
             return false;
         }
 
         $date = DateTime::createFromFormat($this->format, $value);
         if (!$date || $date->format($this->format) !== $value) {
-            $this->errorMessage = "Der Wert muss ein gültiges Datum im Format {$this->format} sein";
+            $this->replaceErrorMessage("Der Wert muss ein gültiges Datum im Format {$this->format} sein");
             return false;
         }
 
         if ($this->minDate && $date < $this->minDate) {
-            $this->errorMessage = "Das Datum muss nach dem {$this->minDate->format($this->format)} liegen";
+            $this->replaceErrorMessage("Das Datum muss nach dem {$this->minDate->format($this->format)} liegen");
             return false;
         }
 
         if ($this->maxDate && $date > $this->maxDate) {
-            $this->errorMessage = "Das Datum muss vor dem {$this->maxDate->format($this->format)} liegen";
+            $this->replaceErrorMessage("Das Datum muss vor dem {$this->maxDate->format($this->format)} liegen");
             return false;
         }
 

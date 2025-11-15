@@ -3,11 +3,14 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Text implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
     private ?int $exactLength;
 
@@ -19,11 +22,6 @@ class Text implements ValidationAttribute
         ?string $message = null
     ) {
         $this->exactLength = $length;
-        
-        if (!is_null($message)) {
-            $this->errorMessage = $message;
-            return;
-        }
 
         // Standard-Fehlermeldung basierend auf den gesetzten Einschränkungen
         $constraints = [];
@@ -42,41 +40,41 @@ class Text implements ValidationAttribute
             $constraints[] = "dem vorgegebenen Muster entsprechen";
         }
 
-        if (empty($constraints)) {
-            $this->errorMessage = "Der Wert muss ein gültiger String sein";
-        } else {
-            $this->errorMessage = "Der String muss " . implode(" und ", $constraints);
-        }
+        $default = empty($constraints)
+            ? "Der Wert muss ein gültiger String sein"
+            : "Der String muss " . implode(" und ", $constraints);
+
+        $this->initializeErrorMessage($message, $default);
     }
 
     public function validate(mixed $value): bool
     {
         if (!is_string($value)) {
-            $this->errorMessage = "Der Wert muss ein String sein";
+            $this->replaceErrorMessage("Der Wert muss ein String sein");
             return false;
         }
 
         // Prüfung der exakten Länge
         if ($this->exactLength !== null && strlen($value) !== $this->exactLength) {
-            $this->errorMessage = "Der String muss exakt {$this->exactLength} Zeichen lang sein";
+            $this->replaceErrorMessage("Der String muss exakt {$this->exactLength} Zeichen lang sein");
             return false;
         }
 
         // Prüfung der Mindestlänge
         if ($this->min !== null && strlen($value) < $this->min) {
-            $this->errorMessage = "Der String muss mindestens {$this->min} Zeichen lang sein";
+            $this->replaceErrorMessage("Der String muss mindestens {$this->min} Zeichen lang sein");
             return false;
         }
 
         // Prüfung der Maximallänge
         if ($this->max !== null && strlen($value) > $this->max) {
-            $this->errorMessage = "Der String darf höchstens {$this->max} Zeichen lang sein";
+            $this->replaceErrorMessage("Der String darf höchstens {$this->max} Zeichen lang sein");
             return false;
         }
 
         // Prüfung des Regex-Patterns
         if ($this->pattern !== null && !preg_match($this->pattern, $value)) {
-            $this->errorMessage = "Der String entspricht nicht dem erforderlichen Muster";
+            $this->replaceErrorMessage("Der String entspricht nicht dem erforderlichen Muster");
             return false;
         }
 

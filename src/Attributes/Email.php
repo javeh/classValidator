@@ -3,16 +3,19 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Email implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
     
-    public function __construct(string $errorMessage = 'Invalid email format')
+    public function __construct(?string $message = null)
     {
-        $this->errorMessage = $errorMessage;
+        $this->initializeErrorMessage($message, "Der Wert muss eine gültige E-Mail-Adresse sein");
     }
 
     public function validate(mixed $value): bool
@@ -21,7 +24,7 @@ class Email implements ValidationAttribute
             return true;
         }
 
-        $this->errorMessage = "Der Wert muss eine gültige E-Mail-Adresse sein";
+        $this->replaceErrorMessage("Der Wert muss eine gültige E-Mail-Adresse sein");
         return false;
     }
 

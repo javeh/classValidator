@@ -3,16 +3,19 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Url implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
 
     public function __construct(?string $message = null)
     {
-        $this->errorMessage = $message ?? "Der Wert muss eine gültige URL sein";
+        $this->initializeErrorMessage($message, "Der Wert muss eine gültige URL sein");
     }
 
     public function validate(mixed $value): bool
@@ -21,7 +24,7 @@ class Url implements ValidationAttribute
             return true;
         }
 
-        $this->errorMessage = "Der Wert muss eine gültige URL sein";
+        $this->replaceErrorMessage("Der Wert muss eine gültige URL sein");
         return false;
     }
 

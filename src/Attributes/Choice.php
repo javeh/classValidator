@@ -3,11 +3,14 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Choice implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
     private array $choices;
 
@@ -22,14 +25,14 @@ class Choice implements ValidationAttribute
         }
         
         $this->choices = array_values($choices);
-        $this->errorMessage = $message ?? $this->generateDefaultMessage();
+        $this->initializeErrorMessage($message, $this->generateDefaultMessage());
     }
 
     public function validate(mixed $value): bool
     {
         if ($this->multiple) {
             if (!is_array($value)) {
-                $this->errorMessage = "Der Wert muss ein Array sein";
+                $this->replaceErrorMessage("Der Wert muss ein Array sein");
                 return false;
             }
 
@@ -59,7 +62,7 @@ class Choice implements ValidationAttribute
                 fn($v) => is_string($v) ? "'{$v}'" : (string)$v,
                 $this->choices
             ));
-            $this->errorMessage = "Der Wert muss einer der folgenden sein: {$choicesString}";
+            $this->replaceErrorMessage("Der Wert muss einer der folgenden sein: {$choicesString}");
             return false;
         }
 

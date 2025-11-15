@@ -3,18 +3,21 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Regex implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
 
     public function __construct(
         private readonly string $pattern,
         ?string $message = null
     ) {
-        $this->errorMessage = $message ?? "Der Wert entspricht nicht dem erforderlichen Muster";
+        $this->initializeErrorMessage($message, "Der Wert entspricht nicht dem erforderlichen Muster");
     }
 
     public function validate(mixed $value): bool
@@ -23,7 +26,7 @@ class Regex implements ValidationAttribute
             return true;
         }
 
-        $this->errorMessage = "Der Wert entspricht nicht dem erforderlichen Muster";
+        $this->replaceErrorMessage("Der Wert entspricht nicht dem erforderlichen Muster");
         return false;
     }
 

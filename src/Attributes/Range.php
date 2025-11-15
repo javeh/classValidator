@@ -3,11 +3,14 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Range implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
 
     public function __construct(
@@ -15,7 +18,7 @@ class Range implements ValidationAttribute
         private readonly int|float $max,
         ?string $message = null
     ) {
-        $this->errorMessage = $message ?? "Der Wert muss zwischen {$this->min} und {$this->max} liegen";
+        $this->initializeErrorMessage($message, "Der Wert muss zwischen {$this->min} und {$this->max} liegen");
     }
 
     public function validate(mixed $value): bool
@@ -24,7 +27,7 @@ class Range implements ValidationAttribute
             return true;
         }
 
-        $this->errorMessage = "Der Wert muss zwischen {$this->min} und {$this->max} liegen";
+        $this->replaceErrorMessage("Der Wert muss zwischen {$this->min} und {$this->max} liegen");
         return false;
     }
 

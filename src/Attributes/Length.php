@@ -3,11 +3,14 @@
 namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
+use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Length implements ValidationAttribute
 {
+    use HandlesValidationMessage;
+
     private string $errorMessage;
     private ?int $exactLength;
 
@@ -20,23 +23,25 @@ class Length implements ValidationAttribute
         $this->exactLength = $length;
         
         if ($length !== null) {
-            $this->errorMessage = $message ?? "Der Wert muss exakt {$length} Einheiten lang sein";
+            $defaultMessage = "Der Wert muss exakt {$length} Einheiten lang sein";
         } elseif ($min !== null && $max !== null) {
-            $this->errorMessage = $message ?? "Der Wert muss zwischen {$min} und {$max} Einheiten lang sein";
+            $defaultMessage = "Der Wert muss zwischen {$min} und {$max} Einheiten lang sein";
         } elseif ($min !== null) {
-            $this->errorMessage = $message ?? "Der Wert muss mindestens {$min} Einheiten lang sein";
+            $defaultMessage = "Der Wert muss mindestens {$min} Einheiten lang sein";
         } elseif ($max !== null) {
-            $this->errorMessage = $message ?? "Der Wert darf höchstens {$max} Einheiten lang sein";
+            $defaultMessage = "Der Wert darf höchstens {$max} Einheiten lang sein";
         } else {
             throw new \InvalidArgumentException('Mindestens einer der Parameter length, min oder max muss gesetzt sein');
         }
+
+        $this->initializeErrorMessage($message, $defaultMessage);
     }
 
     public function validate(mixed $value): bool
     {
         $length = $this->getLength($value);
         if ($length === null) {
-            $this->errorMessage = "Der Wert muss ein String, Array oder Countable sein";
+            $this->replaceErrorMessage("Der Wert muss ein String, Array oder Countable sein");
             return false;
         }
 
@@ -79,24 +84,33 @@ class Length implements ValidationAttribute
 
     private function setSpecificErrorMessage(mixed $value, ?string $type = 'exact'): void
     {
+        $message = null;
+
         if (is_string($value)) {
-            match($type) {
-                'exact' => $this->errorMessage = "Der String muss exakt {$this->exactLength} Zeichen lang sein",
-                'min' => $this->errorMessage = "Der String muss mindestens {$this->min} Zeichen lang sein",
-                'max' => $this->errorMessage = "Der String darf höchstens {$this->max} Zeichen lang sein",
+            $message = match($type) {
+                'exact' => "Der String muss exakt {$this->exactLength} Zeichen lang sein",
+                'min' => "Der String muss mindestens {$this->min} Zeichen lang sein",
+                'max' => "Der String darf höchstens {$this->max} Zeichen lang sein",
+                default => null,
             };
         } elseif (is_array($value)) {
-            match($type) {
-                'exact' => $this->errorMessage = "Das Array muss exakt {$this->exactLength} Elemente enthalten",
-                'min' => $this->errorMessage = "Das Array muss mindestens {$this->min} Elemente enthalten",
-                'max' => $this->errorMessage = "Das Array darf höchstens {$this->max} Elemente enthalten",
+            $message = match($type) {
+                'exact' => "Das Array muss exakt {$this->exactLength} Elemente enthalten",
+                'min' => "Das Array muss mindestens {$this->min} Elemente enthalten",
+                'max' => "Das Array darf höchstens {$this->max} Elemente enthalten",
+                default => null,
             };
         } elseif ($value instanceof \Countable) {
-            match($type) {
-                'exact' => $this->errorMessage = "Die Sammlung muss exakt {$this->exactLength} Elemente enthalten",
-                'min' => $this->errorMessage = "Die Sammlung muss mindestens {$this->min} Elemente enthalten",
-                'max' => $this->errorMessage = "Die Sammlung darf höchstens {$this->max} Elemente enthalten",
+            $message = match($type) {
+                'exact' => "Die Sammlung muss exakt {$this->exactLength} Elemente enthalten",
+                'min' => "Die Sammlung muss mindestens {$this->min} Elemente enthalten",
+                'max' => "Die Sammlung darf höchstens {$this->max} Elemente enthalten",
+                default => null,
             };
+        }
+
+        if ($message !== null) {
+            $this->replaceErrorMessage($message);
         }
     }
 

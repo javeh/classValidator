@@ -15,22 +15,17 @@ class Date implements ValidationAttribute
     private string $errorMessage;
     private ?DateTime $minDate;
     private ?DateTime $maxDate;
+    private string $format;
 
     public function __construct(
-        private readonly ?string $format = 'Y-m-d',
+        ?string $format = 'Y-m-d',
         ?string $min = null,
         ?string $max = null,
         ?string $message = null
     ) {
-        $this->minDate = $min ? DateTime::createFromFormat($format, $min) : null;
-        $this->maxDate = $max ? DateTime::createFromFormat($format, $max) : null;
-
-        if ($min && !$this->minDate) {
-            throw new \InvalidArgumentException("Ungültiges Mindestdatum: {$min}");
-        }
-        if ($max && !$this->maxDate) {
-            throw new \InvalidArgumentException("Ungültiges Maximaldatum: {$max}");
-        }
+        $this->format = $this->assertValidFormat($format ?? 'Y-m-d');
+        $this->minDate = $min ? $this->createBoundaryDate($min, 'Mindestdatum') : null;
+        $this->maxDate = $max ? $this->createBoundaryDate($max, 'Maximaldatum') : null;
 
         if ($this->minDate && $this->maxDate && $this->minDate > $this->maxDate) {
             throw new \InvalidArgumentException('Das Mindestdatum darf nicht nach dem Maximaldatum liegen');
@@ -88,4 +83,31 @@ class Date implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+
+    private function assertValidFormat(string $format): string
+    {
+        if (trim($format) === '') {
+            throw new \InvalidArgumentException('Das Datumsformat darf nicht leer sein');
+        }
+
+        $probeValue = (new DateTime('now'))->format($format);
+        $probeDate = DateTime::createFromFormat($format, $probeValue);
+
+        if (!$probeDate || $probeDate->format($format) !== $probeValue) {
+            throw new \InvalidArgumentException("Ungültiges Datumsformat: {$format}");
+        }
+
+        return $format;
+    }
+
+    private function createBoundaryDate(string $value, string $label): DateTime
+    {
+        $date = DateTime::createFromFormat($this->format, $value);
+
+        if (!$date || $date->format($this->format) !== $value) {
+            throw new \InvalidArgumentException("Ungültiges {$label}: {$value}");
+        }
+
+        return $date;
+    }
+}

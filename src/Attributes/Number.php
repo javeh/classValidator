@@ -26,6 +26,14 @@ class Number implements ValidationAttribute
             throw new \InvalidArgumentException('Eine Zahl kann nicht gleichzeitig positiv und negativ sein');
         }
 
+        if ($step !== null && $step <= 0) {
+            throw new \InvalidArgumentException('Die Schrittweite muss größer als 0 sein');
+        }
+
+        if ($min !== null && $max !== null && $min > $max) {
+            throw new \InvalidArgumentException('Der Mindestwert darf nicht größer als der Maximalwert sein');
+        }
+
         // Standardfehlermeldung basierend auf den Einschränkungen
         $constraints = [];
         

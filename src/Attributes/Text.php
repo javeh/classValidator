@@ -12,7 +12,7 @@ class Text implements ValidationAttribute
     use HandlesValidationMessage;
 
     private string $errorMessage;
-    private ?int $exactLength;
+    private ?Length $lengthValidator = null;
 
     public function __construct(
         ?int $length = null,
@@ -21,7 +21,9 @@ class Text implements ValidationAttribute
         private readonly ?string $pattern = null,
         ?string $message = null
     ) {
-        $this->exactLength = $length;
+        if ($length !== null || $min !== null || $max !== null) {
+            $this->lengthValidator = new Length(length: $length, min: $min, max: $max);
+        }
 
         // Standard-Fehlermeldung basierend auf den gesetzten Einschränkungen
         $constraints = [];
@@ -58,21 +60,8 @@ class Text implements ValidationAttribute
             return false;
         }
 
-        // Prüfung der exakten Länge
-        if ($this->exactLength !== null && strlen($value) !== $this->exactLength) {
-            $this->replaceErrorMessage("Der Text muss exakt {$this->exactLength} Zeichen lang sein");
-            return false;
-        }
-
-        // Prüfung der Mindestlänge
-        if ($this->min !== null && strlen($value) < $this->min) {
-            $this->replaceErrorMessage("Der Text muss mindestens {$this->min} Zeichen lang sein");
-            return false;
-        }
-
-        // Prüfung der Maximallänge
-        if ($this->max !== null && strlen($value) > $this->max) {
-            $this->replaceErrorMessage("Der Text darf höchstens {$this->max} Zeichen lang sein");
+        if ($this->lengthValidator !== null && !$this->lengthValidator->validate($value)) {
+            $this->replaceErrorMessage($this->lengthValidator->getErrorMessage());
             return false;
         }
 

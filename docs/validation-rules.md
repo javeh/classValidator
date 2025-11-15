@@ -5,7 +5,7 @@ Every validator follows the same rules so optional properties behave predictably
 - Validators treat `null` as “not set” and immediately return `true`. Combine the target validator with `#[NotEmpty]` (or a custom presence rule) whenever a field must be provided.
 - Pure type checks guard the rest of the `validate()` logic. If a value is not of the expected type, validation fails with a deterministic error message (no implicit casting).
 - Tuples/arrays/countables are only accepted by validators that explicitly state support (e.g., `Length`).
-- Additional falsy values (`''`, `0`, `false`) are never auto-converted; whether they pass depends on the attribute.
+- Additional falsy values (`''`, `0`, `false`) are never auto-converted; whether they pass depends on the attribute. Text-based length checks delegate to the `Length` validator so both share identical range handling.
 
 Implementation hints:
 

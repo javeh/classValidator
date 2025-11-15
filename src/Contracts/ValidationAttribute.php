@@ -1,6 +1,6 @@
 <?php
 
-namespace Idalabs\Validation\Contracts;
+namespace Javeh\ClassValidator\Contracts;
 
 interface ValidationAttribute
 {

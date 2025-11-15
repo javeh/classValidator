@@ -1,10 +1,10 @@
 {
-    "name": "your-namespace/your-package",
-    "description": "Ein Paket zur Attribut-basierten Validierung von Objekten.",
+    "name": "javeh/class-validator",
+    "description": "Attribut-basierte Validierung von Objekten für PHP 8+.",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Idalabs\\Validation\\": "src/"
+            "Javeh\\ClassValidator\\": "src/"
         }
     },
     "require": {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Idalabs\Validation\Attributes;
+namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
 use DateTime;
-use Idalabs\Validation\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 #[Attribute]
 class Date implements ValidationAttribute

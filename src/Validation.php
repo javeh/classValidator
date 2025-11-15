@@ -1,11 +1,11 @@
 <?php
 
-namespace Idalabs\Validation;
+namespace Javeh\ClassValidator;
 
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
-use Idalabs\Validation\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Contracts\ValidationAttribute;
 
 class Validation
 {

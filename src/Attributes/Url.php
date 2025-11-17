@@ -13,9 +13,9 @@ class Url implements ValidationAttribute
 
     private string $errorMessage;
 
-    public function __construct(?string $message = null)
+    public function __construct()
     {
-        $this->initializeErrorMessage($message, 'validation.url');
+        $this->initializeErrorMessage('validation.url');
     }
 
     public function validate(mixed $value): bool

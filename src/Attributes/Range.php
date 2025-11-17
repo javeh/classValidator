@@ -15,10 +15,13 @@ class Range implements ValidationAttribute
 
     public function __construct(
         private readonly int|float $min,
-        private readonly int|float $max,
-        ?string $message = null
+        private readonly int|float $max
     ) {
-        $this->initializeErrorMessage($message, 'validation.range', [
+        if ($this->max < $this->min) {
+            throw new \InvalidArgumentException('The maximum value must be greater than or equal to the minimum value.');
+        }
+
+        $this->initializeErrorMessage('validation.range', [
             'min' => $this->min,
             'max' => $this->max,
         ]);

@@ -17,8 +17,7 @@ class Choice implements ValidationAttribute
     public function __construct(
         array $choices,
         private readonly bool $strict = true,
-        private readonly bool $multiple = false,
-        ?string $message = null
+        private readonly bool $multiple = false
     ) {
         if (empty($choices)) {
             throw new \InvalidArgumentException('Die Liste der Auswahlmöglichkeiten darf nicht leer sein');
@@ -26,7 +25,6 @@ class Choice implements ValidationAttribute
         
         $this->choices = array_values($choices);
         $this->initializeErrorMessage(
-            $message,
             $this->multiple ? 'validation.choice.multiple' : 'validation.choice.single',
             ['choices' => $this->formatChoices()]
         );

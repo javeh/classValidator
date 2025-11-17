@@ -17,8 +17,7 @@ class Length implements ValidationAttribute
     public function __construct(
         public ?int $length = null,
         private readonly ?int $min = null,
-        private readonly ?int $max = null,
-        ?string $message = null
+        private readonly ?int $max = null
     ) {
         $this->exactLength = $length;
         
@@ -26,7 +25,7 @@ class Length implements ValidationAttribute
             throw new \InvalidArgumentException('Mindestens einer der Parameter length, min oder max muss gesetzt sein');
         }
 
-        $this->initializeErrorMessage($message, 'validation.length.type');
+        $this->initializeErrorMessage('validation.length.type');
     }
 
     public function validate(mixed $value): bool

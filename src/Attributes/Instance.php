@@ -13,17 +13,15 @@ class Instance implements ValidationAttribute
 
     private string $errorMessage;
 
-    public function __construct(
-        private readonly string $className,
-        ?string $message = null
-    ) {
+    public function __construct(private readonly string $className)
+    {
         if (!class_exists($className) && !interface_exists($className)) {
             throw new \InvalidArgumentException(
                 "Die Klasse oder Interface '{$className}' existiert nicht"
             );
         }
 
-        $this->initializeErrorMessage($message, 'validation.instance.required', [
+        $this->initializeErrorMessage('validation.instance.required', [
             'expected' => $className,
         ]);
     }

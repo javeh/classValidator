@@ -20,8 +20,7 @@ class Date implements ValidationAttribute
     public function __construct(
         ?string $format = 'Y-m-d',
         ?string $min = null,
-        ?string $max = null,
-        ?string $message = null
+        ?string $max = null
     ) {
         $this->format = $this->assertValidFormat($format ?? 'Y-m-d');
         $this->minDate = $min ? $this->createBoundaryDate($min, 'Mindestdatum') : null;
@@ -31,7 +30,7 @@ class Date implements ValidationAttribute
             throw new \InvalidArgumentException('The minimum date may not be after the maximum date.');
         }
 
-        $this->initializeErrorMessage($message, 'validation.date.invalid', [
+        $this->initializeErrorMessage('validation.date.invalid', [
             'format' => $this->format,
         ]);
     }

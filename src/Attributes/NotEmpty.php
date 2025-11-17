@@ -13,9 +13,9 @@ class NotEmpty implements ValidationAttribute
 
     private string $errorMessage;
 
-    public function __construct(?string $message = null)
+    public function __construct()
     {
-        $this->initializeErrorMessage($message, 'validation.not_empty');
+        $this->initializeErrorMessage('validation.not_empty');
     }
 
     public function validate(mixed $value): bool

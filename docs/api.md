@@ -35,7 +35,7 @@ interface ValidationAttribute
 }
 ```
 
-Custom attributes usually `use HandlesValidationMessage` to translate default keys while allowing overrides via the `$message` constructor argument.
+Custom attributes usually `use HandlesValidationMessage` to translate default keys consistently without duplicating boilerplate.
 
 ```php
 interface Translation
@@ -53,17 +53,17 @@ interface Translation
 
 | Attribute | Signature | Behaviour Highlights |
 | --------- | --------- | -------------------- |
-| `NotEmpty` | `__construct(?string $message = null)` | Rejects `empty()` values; combine with other validators to make fields required. |
-| `Text` | `__construct(?int $length = null, ?int $min = null, ?int $max = null, ?string $pattern = null, ?string $message = null)` | Accepts only strings, delegates length bounds to `Length`, optional regex via `preg_match`. |
-| `Length` | `__construct(?int $length = null, ?int $min = null, ?int $max = null, ?string $message = null)` | Works for strings, arrays, and `Countable`; enforces exact/min/max counts. |
-| `Number` | `__construct(?float $min = null, ?float $max = null, ?bool $integer = false, ?bool $positive = false, ?bool $negative = false, ?float $step = null, ?string $message = null)` | Guards numerical values with type checks, range, step multiples, integer- or sign-only constraints. |
-| `Range` | `__construct(int|float $min, int|float $max, ?string $message = null)` | Convenience shorthand for inclusive numeric ranges. |
-| `Email` | `__construct(?string $message = null)` | Uses `FILTER_VALIDATE_EMAIL`. |
-| `Url` | `__construct(?string $message = null)` | Uses `FILTER_VALIDATE_URL`. |
-| `Choice` | `__construct(array $choices, bool $strict = true, bool $multiple = false, ?string $message = null)` | Ensures the value (or every value in an array when `multiple=true`) exists inside a whitelist. |
-| `Regex` | `__construct(string $pattern, ?string $message = null)` | Validates strings with `preg_match`; constructor throws if the pattern cannot compile. |
-| `Date` | `__construct(?string $format = 'Y-m-d', ?string $min = null, ?string $max = null, ?string $message = null)` | Parses using `DateTime::createFromFormat`, with optional inclusive boundaries. |
-| `Instance` | `__construct(string $className, ?string $message = null)` | Checks that the value is an object of the given class/interface. |
+| `NotEmpty` | `__construct()` | Rejects `empty()` values; combine with other validators to make fields required. |
+| `Text` | `__construct(?int $length = null, ?int $min = null, ?int $max = null, ?string $pattern = null)` | Accepts only strings, delegates length bounds to `Length`, optional regex via `preg_match`. |
+| `Length` | `__construct(?int $length = null, ?int $min = null, ?int $max = null)` | Works for strings, arrays, and `Countable`; enforces exact/min/max counts. |
+| `Number` | `__construct(?float $min = null, ?float $max = null, ?bool $integer = false, ?bool $positive = false, ?bool $negative = false, ?float $step = null)` | Guards numerical values with type checks, range, step multiples, integer- or sign-only constraints. |
+| `Range` | `__construct(int|float $min, int|float $max)` | Convenience shorthand for inclusive numeric ranges. |
+| `Email` | `__construct()` | Uses `FILTER_VALIDATE_EMAIL`. |
+| `Url` | `__construct()` | Uses `FILTER_VALIDATE_URL`. |
+| `Choice` | `__construct(array $choices, bool $strict = true, bool $multiple = false)` | Ensures the value (or every value in an array when `multiple=true`) exists inside a whitelist. |
+| `Regex` | `__construct(string $pattern)` | Validates strings with `preg_match`; constructor throws if the pattern cannot compile. |
+| `Date` | `__construct(?string $format = 'Y-m-d', ?string $min = null, ?string $max = null)` | Parses using `DateTime::createFromFormat`, with optional inclusive boundaries. |
+| `Instance` | `__construct(string $className)` | Checks that the value is an object of the given class/interface. |
 
 All validators treat `null` as “not set” (auto-pass) unless the attribute’s job is to reject empties (`NotEmpty`). Refer to `docs/validation-rules.md` for the shared nullability and type policy.
 

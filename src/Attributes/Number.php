@@ -19,8 +19,7 @@ class Number implements ValidationAttribute
         private readonly ?bool $integer = false,
         private readonly ?bool $positive = false,
         private readonly ?bool $negative = false,
-        private readonly ?float $step = null,
-        ?string $message = null
+        private readonly ?float $step = null
     ) {
         if ($positive && $negative) {
             throw new \InvalidArgumentException('Eine Zahl kann nicht gleichzeitig positiv und negativ sein');
@@ -57,7 +56,7 @@ class Number implements ValidationAttribute
             $constraints[] = "ein Vielfaches von {$step} sein";
         }
 
-        $this->initializeErrorMessage($message, 'validation.number.type');
+        $this->initializeErrorMessage('validation.number.type');
     }
 
     public function validate(mixed $value): bool

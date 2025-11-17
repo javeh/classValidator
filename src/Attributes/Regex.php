@@ -13,12 +13,10 @@ class Regex implements ValidationAttribute
 
     private string $errorMessage;
 
-    public function __construct(
-        private readonly string $pattern,
-        ?string $message = null
-    ) {
+    public function __construct(private readonly string $pattern)
+    {
         $this->assertPatternIsValid($pattern);
-        $this->initializeErrorMessage($message, 'validation.regex');
+        $this->initializeErrorMessage('validation.regex');
     }
 
     public function validate(mixed $value): bool

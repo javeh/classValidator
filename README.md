@@ -88,7 +88,7 @@ See `docs/translation.md` for custom parser/locale examples.
 
 ## Advanced Usage
 
-- **Custom error text**: every attribute constructor accepts `?string $message`. When set, translation lookups are skipped.
+- **Custom translations**: update locale files or call `$translator->extend()` / `$translator->addLocale()` to adjust copy without touching attribute constructors.
 - **Optional fields**: validators treat `null` as "not set" (returns `true`) except `NotEmpty`. Combine `#[NotEmpty]` with other attributes for mandatory fields.
 - **Multiple validators per property**: errors are collected in the order attributes are declared.
 - **Integration tests/examples**: check `tests/Integration/ValidationIntegrationTest.php` for realistic DTO flows.

@@ -13,9 +13,9 @@ class Email implements ValidationAttribute
 
     private string $errorMessage;
     
-    public function __construct(?string $message = null)
+    public function __construct()
     {
-        $this->initializeErrorMessage($message, 'validation.email');
+        $this->initializeErrorMessage('validation.email');
     }
 
     public function validate(mixed $value): bool

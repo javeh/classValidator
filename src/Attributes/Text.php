@@ -18,14 +18,13 @@ class Text implements ValidationAttribute
         ?int $length = null,
         private readonly ?int $min = null,
         private readonly ?int $max = null,
-        private readonly ?string $pattern = null,
-        ?string $message = null
+        private readonly ?string $pattern = null
     ) {
         if ($length !== null || $min !== null || $max !== null) {
             $this->lengthValidator = new Length(length: $length, min: $min, max: $max);
         }
 
-        $this->initializeErrorMessage($message, 'validation.text.valid');
+        $this->initializeErrorMessage('validation.text.valid');
     }
 
     public function validate(mixed $value): bool

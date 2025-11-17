@@ -16,8 +16,8 @@ class Text implements ValidationAttribute
 
     public function __construct(
         ?int $length = null,
-        private readonly ?int $min = null,
-        private readonly ?int $max = null,
+        ?int $min = null,
+        ?int $max = null,
         private readonly ?string $pattern = null
     ) {
         if ($length !== null || $min !== null || $max !== null) {

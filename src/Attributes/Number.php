@@ -33,29 +33,6 @@ class Number implements ValidationAttribute
             throw new \InvalidArgumentException('Der Mindestwert darf nicht größer als der Maximalwert sein');
         }
 
-        // Standardfehlermeldung basierend auf den Einschränkungen
-        $constraints = [];
-        
-        if ($integer) {
-            $constraints[] = "eine Ganzzahl sein";
-        }
-        if ($positive) {
-            $constraints[] = "positiv sein";
-        }
-        if ($negative) {
-            $constraints[] = "negativ sein";
-        }
-        if ($min !== null && $max !== null) {
-            $constraints[] = "zwischen {$min} und {$max} liegen";
-        } elseif ($min !== null) {
-            $constraints[] = "größer oder gleich {$min} sein";
-        } elseif ($max !== null) {
-            $constraints[] = "kleiner oder gleich {$max} sein";
-        }
-        if ($step !== null) {
-            $constraints[] = "ein Vielfaches von {$step} sein";
-        }
-
         $this->initializeErrorMessage('validation.number.type');
     }
 

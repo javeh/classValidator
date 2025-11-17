@@ -79,8 +79,6 @@ class Length implements ValidationAttribute
 
     private function setSpecificErrorMessage(mixed $value, ?string $type = 'exact'): void
     {
-        $message = null;
-
         if (is_string($value)) {
             $key = match($type) {
                 'exact' => 'validation.length.text_exact',

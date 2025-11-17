@@ -32,10 +32,6 @@ class Instance implements ValidationAttribute
             return true;
         }
 
-        if ($value === null) {
-            return true;
-        }
-
         if (!is_object($value)) {
             $this->replaceErrorMessage('validation.instance.object');
             return false;

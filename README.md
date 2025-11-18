@@ -62,6 +62,7 @@ $errors = $validation->validate($input);
 | `Text` | Enforces string type, min/max length, exact length or regex pattern. Delegates to `Length` for long/short checks. |
 | `Length` | Counts strings, arrays or countables (`length`, `min`, `max`). |
 | `Number` | Numeric validation (min/max, integer-only, positive/negative flags, step multiplicity). |
+| `PositiveNumber` | Alias of `Number` enforcing values greater than zero (integers or floats). |
 | `Id` | Alias of `Number` with positive integer defaults (integer + positive). |
 | `Range` | Numeric range check (int/float). |
 | `Email`, `Url`, `Regex` | Specialized validators using PHP filters/regex. |

@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Number implements ValidationAttribute
@@ -22,15 +23,24 @@ class Number implements ValidationAttribute
         private readonly ?float $step = null
     ) {
         if ($positive && $negative) {
-            throw new \InvalidArgumentException('Eine Zahl kann nicht gleichzeitig positiv und negativ sein');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.number.sign_conflict')
+            );
         }
 
         if ($step !== null && $step <= 0) {
-            throw new \InvalidArgumentException('Die Schrittweite muss größer als 0 sein');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.number.step_positive')
+            );
         }
 
         if ($min !== null && $max !== null && $min > $max) {
-            throw new \InvalidArgumentException('Der Mindestwert darf nicht größer als der Maximalwert sein');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.number.bounds', [
+                    'min' => $min,
+                    'max' => $max,
+                ])
+            );
         }
 
         $this->initializeErrorMessage('validation.number.type');

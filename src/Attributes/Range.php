@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Range implements ValidationAttribute
@@ -18,7 +19,9 @@ class Range implements ValidationAttribute
         private readonly int|float $max
     ) {
         if ($this->max < $this->min) {
-            throw new \InvalidArgumentException('The maximum value must be greater than or equal to the minimum value.');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.range.bounds')
+            );
         }
 
         $this->initializeErrorMessage('validation.range', [

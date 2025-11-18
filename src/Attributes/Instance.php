@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Instance implements ValidationAttribute
@@ -17,7 +18,9 @@ class Instance implements ValidationAttribute
     {
         if (!class_exists($className) && !interface_exists($className)) {
             throw new \InvalidArgumentException(
-                "Die Klasse oder Interface '{$className}' existiert nicht"
+                TranslationManager::get()->translate('validation.config.instance.class_missing', [
+                    'class' => $className,
+                ])
             );
         }
 

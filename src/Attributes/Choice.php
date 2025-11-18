@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Choice implements ValidationAttribute
@@ -20,7 +21,9 @@ class Choice implements ValidationAttribute
         private readonly bool $multiple = false
     ) {
         if (empty($choices)) {
-            throw new \InvalidArgumentException('Die Liste der Auswahlmöglichkeiten darf nicht leer sein');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.choice.empty')
+            );
         }
         
         $this->choices = array_values($choices);

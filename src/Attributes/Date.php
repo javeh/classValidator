@@ -6,6 +6,7 @@ use Attribute;
 use DateTime;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Date implements ValidationAttribute
@@ -23,11 +24,16 @@ class Date implements ValidationAttribute
         ?string $max = null
     ) {
         $this->format = $this->assertValidFormat($format ?? 'Y-m-d');
-        $this->minDate = $min ? $this->createBoundaryDate($min, 'Mindestdatum') : null;
-        $this->maxDate = $max ? $this->createBoundaryDate($max, 'Maximaldatum') : null;
+        $this->minDate = $min ? $this->createBoundaryDate($min, 'validation.config.date.min_label') : null;
+        $this->maxDate = $max ? $this->createBoundaryDate($max, 'validation.config.date.max_label') : null;
 
         if ($this->minDate && $this->maxDate && $this->minDate > $this->maxDate) {
-            throw new \InvalidArgumentException('The minimum date may not be after the maximum date.');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.date.bounds', [
+                    'min' => $this->minDate->format($this->format),
+                    'max' => $this->maxDate->format($this->format),
+                ])
+            );
         }
 
         $this->initializeErrorMessage('validation.date.invalid', [
@@ -77,25 +83,38 @@ class Date implements ValidationAttribute
     private function assertValidFormat(string $format): string
     {
         if (trim($format) === '') {
-            throw new \InvalidArgumentException('Date format may not be empty.');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.date.format_empty')
+            );
         }
 
         $probeValue = (new DateTime('now'))->format($format);
         $probeDate = DateTime::createFromFormat($format, $probeValue);
 
         if (!$probeDate || $probeDate->format($format) !== $probeValue) {
-            throw new \InvalidArgumentException("Invalid date format: {$format}");
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.date.format_invalid', [
+                    'format' => $format,
+                ])
+            );
         }
 
         return $format;
     }
 
-    private function createBoundaryDate(string $value, string $label): DateTime
+    private function createBoundaryDate(string $value, string $labelKey): DateTime
     {
+        $label = TranslationManager::get()->translate($labelKey);
         $date = DateTime::createFromFormat($this->format, $value);
 
         if (!$date || $date->format($this->format) !== $value) {
-            throw new \InvalidArgumentException("Invalid {$label}: {$value}");
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.date.boundary', [
+                    'label' => $label,
+                    'value' => $value,
+                    'format' => $this->format,
+                ])
+            );
         }
 
         return $date;

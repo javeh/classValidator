@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Regex implements ValidationAttribute
@@ -47,7 +48,11 @@ class Regex implements ValidationAttribute
         restore_error_handler();
 
         if (preg_last_error() !== PREG_NO_ERROR) {
-            throw new \InvalidArgumentException("Invalid regex pattern: {$pattern}");
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.regex.pattern', [
+                    'pattern' => $pattern,
+                ])
+            );
         }
     }
 }

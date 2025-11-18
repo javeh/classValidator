@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
 class Length implements ValidationAttribute
@@ -22,7 +23,9 @@ class Length implements ValidationAttribute
         $this->exactLength = $length;
         
         if ($length === null && $min === null && $max === null) {
-            throw new \InvalidArgumentException('Mindestens einer der Parameter length, min oder max muss gesetzt sein');
+            throw new \InvalidArgumentException(
+                TranslationManager::get()->translate('validation.config.length.constraint')
+            );
         }
 
         $this->initializeErrorMessage('validation.length.type');

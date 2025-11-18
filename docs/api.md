@@ -57,6 +57,7 @@ interface Translation
 | `Text` | `__construct(?int $length = null, ?int $min = null, ?int $max = null, ?string $pattern = null)` | Accepts only strings, delegates length bounds to `Length`, optional regex via `preg_match`. |
 | `Length` | `__construct(?int $length = null, ?int $min = null, ?int $max = null)` | Works for strings, arrays, and `Countable`; enforces exact/min/max counts. |
 | `Number` | `__construct(?float $min = null, ?float $max = null, ?bool $integer = false, ?bool $positive = false, ?bool $negative = false, ?float $step = null)` | Guards numerical values with type checks, range, step multiples, integer- or sign-only constraints. |
+| `Id` | `__construct()` | Shortcut for positive integers (wraps `Number` with `integer=true, positive=true`). |
 | `Range` | `__construct(int|float $min, int|float $max)` | Convenience shorthand for inclusive numeric ranges. |
 | `Email` | `__construct()` | Uses `FILTER_VALIDATE_EMAIL`. |
 | `Url` | `__construct()` | Uses `FILTER_VALIDATE_URL`. |

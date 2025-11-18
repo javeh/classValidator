@@ -1,6 +1,8 @@
 {
     "name": "javeh/class-validator",
-    "description": "Attribut based validation of Objects of PHP 8+.",
+    "description": "Attribut based validation of Objects for PHP 8+.",
+    "version": "0.2.0",
+    "license": "MIT",
     "type": "library",
     "autoload": {
         "psr-4": {

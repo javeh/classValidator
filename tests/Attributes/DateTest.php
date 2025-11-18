@@ -37,4 +37,28 @@ class DateTest extends TestCase
         $this->assertFalse($validator->validate('2024-02-01'));
         $this->assertSame('The date must be before 2024-01-31.', $validator->getErrorMessage());
     }
+
+    public function testConstructorRejectsMinAfterMax(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The minimum date may not be after the maximum date.');
+
+        new Date(min: '2024-02-01', max: '2024-01-01');
+    }
+
+    public function testConstructorRejectsEmptyFormat(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Date format may not be empty.');
+
+        new Date(format: ' ');
+    }
+
+    public function testConstructorRejectsInvalidBoundary(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The minimum date "2024/01/01" does not match the format Y-m-d.');
+
+        new Date(min: '2024/01/01');
+    }
 }

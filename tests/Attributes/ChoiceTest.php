@@ -42,4 +42,12 @@ class ChoiceTest extends TestCase
             $validator->getErrorMessage()
         );
     }
+
+    public function testConstructorRejectsEmptyChoices(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The choices list may not be empty.');
+
+        new Choice([]);
+    }
 }

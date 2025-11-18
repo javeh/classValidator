@@ -31,4 +31,12 @@ class InstanceTest extends TestCase
             $validator->getErrorMessage()
         );
     }
+
+    public function testConstructorRejectsUnknownClass(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The class or interface "MissingClass" does not exist.');
+
+        new Instance('MissingClass');
+    }
 }

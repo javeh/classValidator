@@ -24,6 +24,8 @@ class RegexTest extends TestCase
     public function testThrowsOnInvalidPattern(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        new Regex('/[/');
+        $this->expectExceptionMessage('Invalid regex pattern: /(');
+
+        new Regex('/(');
     }
 }

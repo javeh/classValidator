@@ -36,4 +36,12 @@ class LengthTest extends TestCase
         $this->assertFalse($validator->validate(123));
         $this->assertSame('The value must be text, an array, or a countable collection.', $validator->getErrorMessage());
     }
+
+    public function testConstructorRequiresAtLeastOneConstraint(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('At least one of length, min, or max must be provided.');
+
+        new Length();
+    }
 }

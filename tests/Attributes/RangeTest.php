@@ -26,4 +26,12 @@ class RangeTest extends TestCase
         $validator = new Range(0, 100);
         $this->assertTrue($validator->validate(null));
     }
+
+    public function testConstructorRejectsMaxBelowMin(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The maximum value must be greater than or equal to the minimum value.');
+
+        new Range(10, 5);
+    }
 }

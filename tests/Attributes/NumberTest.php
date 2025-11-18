@@ -46,4 +46,28 @@ class NumberTest extends TestCase
         $this->assertFalse($validator->validate(1.5));
         $this->assertSame('The value must be an integer.', $validator->getErrorMessage());
     }
+
+    public function testConstructorRejectsConflictingSignFlags(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('A number cannot be positive and negative at the same time.');
+
+        new Number(positive: true, negative: true);
+    }
+
+    public function testConstructorRequiresPositiveStep(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The step size must be greater than 0.');
+
+        new Number(step: 0);
+    }
+
+    public function testConstructorRejectsInvalidBounds(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The minimum (5) may not be greater than the maximum (2).');
+
+        new Number(min: 5, max: 2);
+    }
 }

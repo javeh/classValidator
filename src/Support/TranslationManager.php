@@ -5,7 +5,7 @@ namespace Javeh\ClassValidator\Support;
 use Javeh\ClassValidator\Contracts\Translation;
 
 /**
- * @deprecated This class introduces global state and will be removed in v2.0. Use ValidationContext instead.
+ * @deprecated This class introduces global state and will be removed in v1.0. Use ValidationContext instead.
  */
 class TranslationManager
 {

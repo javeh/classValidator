@@ -10,14 +10,14 @@ class IdTest extends TestCase
     public function testAcceptsPositiveInteger(): void
     {
         $validator = new Id();
-        $this->assertTrue($validator->validate(42));
+        $this->assertTrue($validator->validate(42, $this->context));
     }
 
     public function testRejectsZeroOrNegative(): void
     {
         $validator = new Id();
 
-        $this->assertFalse($validator->validate(0));
+        $this->assertFalse($validator->validate(0, $this->context));
         $this->assertSame('The number must be positive.', $validator->getErrorMessage());
     }
 
@@ -25,7 +25,7 @@ class IdTest extends TestCase
     {
         $validator = new Id();
 
-        $this->assertFalse($validator->validate(3.14));
+        $this->assertFalse($validator->validate(3.14, $this->context));
         $this->assertSame('The value must be an integer.', $validator->getErrorMessage());
     }
 }

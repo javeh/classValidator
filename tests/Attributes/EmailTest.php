@@ -10,14 +10,14 @@ class EmailTest extends TestCase
     public function testAcceptsValidEmail(): void
     {
         $validator = new Email();
-        $this->assertTrue($validator->validate('user@example.com'));
+        $this->assertTrue($validator->validate('user@example.com', $this->context));
     }
 
     public function testRejectsInvalidEmail(): void
     {
         $validator = new Email();
 
-        $this->assertFalse($validator->validate('not-an-email'));
+        $this->assertFalse($validator->validate('not-an-email', $this->context));
         $this->assertSame('The value must be a valid email address.', $validator->getErrorMessage());
     }
 }

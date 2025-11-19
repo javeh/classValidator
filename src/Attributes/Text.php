@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Text implements ValidationAttribute
@@ -27,25 +28,25 @@ class Text implements ValidationAttribute
         $this->initializeErrorMessage('validation.text.valid');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
         }
 
         if (!is_string($value)) {
-            $this->replaceErrorMessage('validation.text.type');
+            $this->replaceErrorMessage('validation.text.type', [], $context);
             return false;
         }
 
-        if ($this->lengthValidator !== null && !$this->lengthValidator->validate($value)) {
+        if ($this->lengthValidator !== null && !$this->lengthValidator->validate($value, $context)) {
             $this->adoptErrorMessage($this->lengthValidator->getErrorMessage());
             return false;
         }
 
         // Prüfung des Regex-Patterns
         if ($this->pattern !== null && !preg_match($this->pattern, $value)) {
-            $this->replaceErrorMessage('validation.text.pattern');
+            $this->replaceErrorMessage('validation.text.pattern', [], $context);
             return false;
         }
 
@@ -56,4 +57,4 @@ class Text implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

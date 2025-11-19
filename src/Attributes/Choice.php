@@ -6,6 +6,7 @@ use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 use Javeh\ClassValidator\Support\TranslationManager;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Choice implements ValidationAttribute
@@ -25,7 +26,7 @@ class Choice implements ValidationAttribute
                 TranslationManager::get()->translate('validation.config.choice.empty')
             );
         }
-        
+
         $this->choices = array_values($choices);
         $this->initializeErrorMessage(
             $this->multiple ? 'validation.choice.multiple' : 'validation.choice.single',
@@ -33,7 +34,7 @@ class Choice implements ValidationAttribute
         );
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -41,22 +42,22 @@ class Choice implements ValidationAttribute
 
         if ($this->multiple) {
             if (!is_array($value)) {
-                $this->replaceErrorMessage('validation.choice.array');
+                $this->replaceErrorMessage('validation.choice.array', [], $context);
                 return false;
             }
 
             foreach ($value as $item) {
-                if (!$this->validateSingleValue($item)) {
+                if (!$this->validateSingleValue($item, $context)) {
                     return false;
                 }
             }
             return true;
         }
 
-        return $this->validateSingleValue($value);
+        return $this->validateSingleValue($value, $context);
     }
 
-    private function validateSingleValue(mixed $value): bool
+    private function validateSingleValue(mixed $value, ValidationContext $context): bool
     {
         foreach ($this->choices as $choice) {
             if ($this->strict ? $value === $choice : $value == $choice) {
@@ -66,7 +67,8 @@ class Choice implements ValidationAttribute
 
         $this->replaceErrorMessage(
             $this->multiple ? 'validation.choice.multiple' : 'validation.choice.single',
-            ['choices' => $this->formatChoices()]
+            ['choices' => $this->formatChoices()],
+            $context
         );
         return false;
     }
@@ -74,7 +76,7 @@ class Choice implements ValidationAttribute
     private function formatChoices(): string
     {
         return implode(', ', array_map(
-            fn($v) => is_string($v) ? "'{$v}'" : (string)$v,
+            fn($v) => is_string($v) ? "'{$v}'" : (string) $v,
             $this->choices
         ));
     }
@@ -83,4 +85,4 @@ class Choice implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

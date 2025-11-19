@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class NotEmpty implements ValidationAttribute
@@ -18,13 +19,13 @@ class NotEmpty implements ValidationAttribute
         $this->initializeErrorMessage('validation.not_empty');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if (!empty($value)) {
             return true;
         }
 
-        $this->replaceErrorMessage('validation.not_empty');
+        $this->replaceErrorMessage('validation.not_empty', [], $context);
         return false;
     }
 
@@ -32,4 +33,4 @@ class NotEmpty implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

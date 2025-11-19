@@ -6,6 +6,7 @@ use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 use Javeh\ClassValidator\Support\TranslationManager;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Number implements ValidationAttribute
@@ -46,7 +47,7 @@ class Number implements ValidationAttribute
         $this->initializeErrorMessage('validation.number.type');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -54,35 +55,35 @@ class Number implements ValidationAttribute
 
         // Prüfe ob es eine Zahl ist
         if (!is_numeric($value)) {
-            $this->replaceErrorMessage('validation.number.type');
+            $this->replaceErrorMessage('validation.number.type', [], $context);
             return false;
         }
 
         $number = (float) $value;
 
         // Ganzzahl-Prüfung
-        if ($this->integer && !is_int($number) && $number != (int)$number) {
-            $this->replaceErrorMessage('validation.number.integer');
+        if ($this->integer && !is_int($number) && $number != (int) $number) {
+            $this->replaceErrorMessage('validation.number.integer', [], $context);
             return false;
         }
 
         // Vorzeichen-Prüfung
         if ($this->positive && $number <= 0) {
-            $this->replaceErrorMessage('validation.number.positive');
+            $this->replaceErrorMessage('validation.number.positive', [], $context);
             return false;
         }
         if ($this->negative && $number >= 0) {
-            $this->replaceErrorMessage('validation.number.negative');
+            $this->replaceErrorMessage('validation.number.negative', [], $context);
             return false;
         }
 
         // Bereichs-Prüfung
         if ($this->min !== null && $number < $this->min) {
-            $this->replaceErrorMessage('validation.number.min', ['min' => $this->min]);
+            $this->replaceErrorMessage('validation.number.min', ['min' => $this->min], $context);
             return false;
         }
         if ($this->max !== null && $number > $this->max) {
-            $this->replaceErrorMessage('validation.number.max', ['max' => $this->max]);
+            $this->replaceErrorMessage('validation.number.max', ['max' => $this->max], $context);
             return false;
         }
 
@@ -91,7 +92,7 @@ class Number implements ValidationAttribute
             $remainder = fmod($number, $this->step);
             // Berücksichtige Floating-Point-Ungenauigkeiten
             if (abs($remainder) > 0.000001 && abs($remainder - $this->step) > 0.000001) {
-                $this->replaceErrorMessage('validation.number.step', ['step' => $this->step]);
+                $this->replaceErrorMessage('validation.number.step', ['step' => $this->step], $context);
                 return false;
             }
         }
@@ -103,4 +104,4 @@ class Number implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

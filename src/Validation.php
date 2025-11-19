@@ -10,15 +10,20 @@ use Javeh\ClassValidator\Support\TranslationManager;
 
 class Validation
 {
-    public function __construct(?Translation $translation = null)
-    {
-        TranslationManager::ensure($translation);
+    public function __construct(
+        private readonly ?Translation $translation = null
+    ) {
+        if ($translation !== null) {
+            TranslationManager::set($translation);
+        }
     }
 
     public function validate(object $object): array
     {
         $errors = [];
         $reflection = new ReflectionClass($object);
+
+        $context = new ValidationContext($this->translation ?? TranslationManager::get());
 
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(ValidationAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
@@ -29,7 +34,7 @@ class Validation
                 $property->setAccessible(true);
                 $value = $property->getValue($object);
 
-                if (!$validator->validate($value)) {
+                if (!$validator->validate($value, $context)) {
                     $errors[$property->getName()][] = $validator->getErrorMessage();
                 }
             }

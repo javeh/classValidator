@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 use Javeh\ClassValidator\Support\TranslationManager;
 
 #[Attribute]
@@ -29,7 +30,7 @@ class Instance implements ValidationAttribute
         ]);
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -45,7 +46,7 @@ class Instance implements ValidationAttribute
             $this->replaceErrorMessage('validation.instance.type', [
                 'actual' => $actualClass,
                 'expected' => $this->className,
-            ]);
+            ], $context);
             return false;
         }
 
@@ -56,4 +57,4 @@ class Instance implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

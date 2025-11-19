@@ -10,14 +10,14 @@ class InstanceTest extends TestCase
     public function testValidInstance(): void
     {
         $validator = new Instance(\stdClass::class);
-        $this->assertTrue($validator->validate(new \stdClass()));
+        $this->assertTrue($validator->validate(new \stdClass(), $this->context));
     }
 
     public function testRejectsNonObject(): void
     {
         $validator = new Instance(\stdClass::class);
 
-        $this->assertFalse($validator->validate('string'));
+        $this->assertFalse($validator->validate('string', $this->context));
         $this->assertSame('The value must be an object.', $validator->getErrorMessage());
     }
 
@@ -25,7 +25,7 @@ class InstanceTest extends TestCase
     {
         $validator = new Instance(\ArrayObject::class);
 
-        $this->assertFalse($validator->validate(new \stdClass()));
+        $this->assertFalse($validator->validate(new \stdClass(), $this->context));
         $this->assertSame(
             'The value is an instance of stdClass but must be an instance of ArrayObject.',
             $validator->getErrorMessage()

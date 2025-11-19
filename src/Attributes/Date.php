@@ -7,6 +7,7 @@ use DateTime;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 use Javeh\ClassValidator\Support\TranslationManager;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Date implements ValidationAttribute
@@ -41,34 +42,34 @@ class Date implements ValidationAttribute
         ]);
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
         }
 
         if (!is_string($value)) {
-            $this->replaceErrorMessage('validation.date.type', ['format' => $this->format]);
+            $this->replaceErrorMessage('validation.date.type', ['format' => $this->format], $context);
             return false;
         }
 
         $date = DateTime::createFromFormat($this->format, $value);
         if (!$date || $date->format($this->format) !== $value) {
-            $this->replaceErrorMessage('validation.date.invalid', ['format' => $this->format]);
+            $this->replaceErrorMessage('validation.date.invalid', ['format' => $this->format], $context);
             return false;
         }
 
         if ($this->minDate && $date < $this->minDate) {
             $this->replaceErrorMessage('validation.date.after', [
                 'date' => $this->minDate->format($this->format),
-            ]);
+            ], $context);
             return false;
         }
 
         if ($this->maxDate && $date > $this->maxDate) {
             $this->replaceErrorMessage('validation.date.before', [
                 'date' => $this->maxDate->format($this->format),
-            ]);
+            ], $context);
             return false;
         }
 

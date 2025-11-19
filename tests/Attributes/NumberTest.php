@@ -10,14 +10,14 @@ class NumberTest extends TestCase
     public function testAcceptsNumberWithinRange(): void
     {
         $validator = new Number(min: 1, max: 10);
-        $this->assertTrue($validator->validate(5));
+        $this->assertTrue($validator->validate(5, $this->context));
     }
 
     public function testRejectsNonNumericValues(): void
     {
         $validator = new Number();
 
-        $this->assertFalse($validator->validate('abc'));
+        $this->assertFalse($validator->validate('abc', $this->context));
         $this->assertSame('The value must be a number.', $validator->getErrorMessage());
     }
 
@@ -25,25 +25,25 @@ class NumberTest extends TestCase
     {
         $validator = new Number(step: 2);
 
-        $this->assertFalse($validator->validate(3));
+        $this->assertFalse($validator->validate(3, $this->context));
         $this->assertSame('The number must be a multiple of 2.', $validator->getErrorMessage());
     }
 
     public function testRejectsBelowMinAndAboveMax(): void
     {
         $validator = new Number(min: 10);
-        $this->assertFalse($validator->validate(5));
+        $this->assertFalse($validator->validate(5, $this->context));
         $this->assertSame('The number must be greater than or equal to 10.', $validator->getErrorMessage());
 
         $validator = new Number(max: 3);
-        $this->assertFalse($validator->validate(4));
+        $this->assertFalse($validator->validate(4, $this->context));
         $this->assertSame('The number must be less than or equal to 3.', $validator->getErrorMessage());
     }
 
     public function testIntegerFlagRejectsFloats(): void
     {
         $validator = new Number(integer: true);
-        $this->assertFalse($validator->validate(1.5));
+        $this->assertFalse($validator->validate(1.5, $this->context));
         $this->assertSame('The value must be an integer.', $validator->getErrorMessage());
     }
 

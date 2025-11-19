@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Url implements ValidationAttribute
@@ -18,7 +19,7 @@ class Url implements ValidationAttribute
         $this->initializeErrorMessage('validation.url');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -28,7 +29,7 @@ class Url implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage('validation.url');
+        $this->replaceErrorMessage('validation.url', [], $context);
         return false;
     }
 
@@ -36,4 +37,4 @@ class Url implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

@@ -10,14 +10,14 @@ class UrlTest extends TestCase
     public function testAcceptsValidUrl(): void
     {
         $validator = new Url();
-        $this->assertTrue($validator->validate('https://example.com'));
+        $this->assertTrue($validator->validate('https://example.com', $this->context));
     }
 
     public function testRejectsInvalidUrl(): void
     {
         $validator = new Url();
 
-        $this->assertFalse($validator->validate('not-a-url'));
+        $this->assertFalse($validator->validate('not-a-url', $this->context));
         $this->assertSame('The value must be a valid URL.', $validator->getErrorMessage());
     }
 }

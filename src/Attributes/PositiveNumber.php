@@ -4,6 +4,7 @@ namespace Javeh\ClassValidator\Attributes;
 
 use Attribute;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class PositiveNumber implements ValidationAttribute
@@ -15,9 +16,9 @@ class PositiveNumber implements ValidationAttribute
         $this->numberValidator = new Number(positive: true);
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
-        return $this->numberValidator->validate($value);
+        return $this->numberValidator->validate($value, $context);
     }
 
     public function getErrorMessage(): string

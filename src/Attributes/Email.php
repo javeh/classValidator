@@ -5,6 +5,7 @@ namespace Javeh\ClassValidator\Attributes;
 use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Email implements ValidationAttribute
@@ -12,13 +13,13 @@ class Email implements ValidationAttribute
     use HandlesValidationMessage;
 
     private string $errorMessage;
-    
+
     public function __construct()
     {
         $this->initializeErrorMessage('validation.email');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -28,7 +29,7 @@ class Email implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage('validation.email');
+        $this->replaceErrorMessage('validation.email', [], $context);
         return false;
     }
 
@@ -36,4 +37,4 @@ class Email implements ValidationAttribute
     {
         return $this->errorMessage;
     }
-} 
+}

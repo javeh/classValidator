@@ -3,6 +3,7 @@
 namespace Javeh\ClassValidator\Concerns;
 
 use Javeh\ClassValidator\Support\TranslationManager;
+use Javeh\ClassValidator\ValidationContext;
 
 /**
  * Helper trait to respect custom validation messages.
@@ -14,9 +15,9 @@ trait HandlesValidationMessage
         $this->errorMessage = $this->translate($defaultKey, $context);
     }
 
-    private function replaceErrorMessage(string $key, array $context = []): void
+    private function replaceErrorMessage(string $key, array $replace = [], ?ValidationContext $context = null): void
     {
-        $this->errorMessage = $this->translate($key, $context);
+        $this->errorMessage = $this->translate($key, $replace, $context);
     }
 
     private function adoptErrorMessage(string $message): void
@@ -24,8 +25,11 @@ trait HandlesValidationMessage
         $this->errorMessage = $message;
     }
 
-    private function translate(string $key, array $context = []): string
+    private function translate(string $key, array $replace = [], ?ValidationContext $context = null): string
     {
-        return TranslationManager::get()->translate($key, $context);
+        if ($context) {
+            return $context->translate($key, $replace);
+        }
+        return TranslationManager::get()->translate($key, $replace);
     }
 }

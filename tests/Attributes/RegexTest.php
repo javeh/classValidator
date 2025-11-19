@@ -10,14 +10,14 @@ class RegexTest extends TestCase
     public function testAcceptsValueMatchingPattern(): void
     {
         $validator = new Regex('/^foo/');
-        $this->assertTrue($validator->validate('foobar'));
+        $this->assertTrue($validator->validate('foobar', $this->context));
     }
 
     public function testRejectsValueBreakingPattern(): void
     {
         $validator = new Regex('/^foo/');
 
-        $this->assertFalse($validator->validate('bar'));
+        $this->assertFalse($validator->validate('bar', $this->context));
         $this->assertSame('The value must match the required pattern.', $validator->getErrorMessage());
     }
 

@@ -6,6 +6,7 @@ use Attribute;
 use Javeh\ClassValidator\Concerns\HandlesValidationMessage;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 use Javeh\ClassValidator\Support\TranslationManager;
+use Javeh\ClassValidator\ValidationContext;
 
 #[Attribute]
 class Regex implements ValidationAttribute
@@ -20,7 +21,7 @@ class Regex implements ValidationAttribute
         $this->initializeErrorMessage('validation.regex');
     }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         if ($value === null) {
             return true;
@@ -30,7 +31,7 @@ class Regex implements ValidationAttribute
             return true;
         }
 
-        $this->replaceErrorMessage('validation.regex');
+        $this->replaceErrorMessage('validation.regex', [], $context);
         return false;
     }
 

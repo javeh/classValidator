@@ -10,14 +10,14 @@ class PositiveNumberTest extends TestCase
     public function testAcceptsPositiveFloats(): void
     {
         $validator = new PositiveNumber();
-        $this->assertTrue($validator->validate(1.5));
+        $this->assertTrue($validator->validate(1.5, $this->context));
     }
 
     public function testRejectsZero(): void
     {
         $validator = new PositiveNumber();
 
-        $this->assertFalse($validator->validate(0));
+        $this->assertFalse($validator->validate(0, $this->context));
         $this->assertSame('The number must be positive.', $validator->getErrorMessage());
     }
 
@@ -25,7 +25,7 @@ class PositiveNumberTest extends TestCase
     {
         $validator = new PositiveNumber();
 
-        $this->assertFalse($validator->validate(-5));
+        $this->assertFalse($validator->validate(-5, $this->context));
         $this->assertSame('The number must be positive.', $validator->getErrorMessage());
     }
 }

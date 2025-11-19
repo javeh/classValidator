@@ -10,14 +10,14 @@ class TextTest extends TestCase
     public function testAcceptsValidText(): void
     {
         $validator = new Text(min: 3, max: 5);
-        $this->assertTrue($validator->validate('four'));
+        $this->assertTrue($validator->validate('four', $this->context));
     }
 
     public function testRejectsPatternMismatch(): void
     {
         $validator = new Text(pattern: '/^[0-9]+$/');
 
-        $this->assertFalse($validator->validate('abc'));
+        $this->assertFalse($validator->validate('abc', $this->context));
         $this->assertSame('The text does not match the required pattern.', $validator->getErrorMessage());
     }
 
@@ -25,7 +25,7 @@ class TextTest extends TestCase
     {
         $validator = new Text(min: 4);
 
-        $this->assertFalse($validator->validate('abc'));
+        $this->assertFalse($validator->validate('abc', $this->context));
         $this->assertSame('The text must be at least 4 characters long.', $validator->getErrorMessage());
     }
 
@@ -33,7 +33,7 @@ class TextTest extends TestCase
     {
         $validator = new Text(max: 2);
 
-        $this->assertFalse($validator->validate('three'));
+        $this->assertFalse($validator->validate('three', $this->context));
         $this->assertSame('The text may not exceed 2 characters.', $validator->getErrorMessage());
     }
 }

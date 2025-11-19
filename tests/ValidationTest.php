@@ -7,6 +7,7 @@ use Javeh\ClassValidator\Attributes\Email;
 use Javeh\ClassValidator\Contracts\ValidationAttribute;
 use Javeh\ClassValidator\Support\ArrayTranslation;
 use Javeh\ClassValidator\Validation;
+use Javeh\ClassValidator\ValidationContext;
 
 class ValidationTest extends TestCase
 {
@@ -42,9 +43,11 @@ class ValidationTest extends TestCase
 #[Attribute]
 class AlwaysFails implements ValidationAttribute
 {
-    public function __construct(private string $message) {}
+    public function __construct(private string $message)
+    {
+    }
 
-    public function validate(mixed $value): bool
+    public function validate(mixed $value, ValidationContext $context): bool
     {
         return false;
     }

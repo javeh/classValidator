@@ -11,15 +11,15 @@ class ChoiceTest extends TestCase
     {
         $validator = new Choice(['A', 'B']);
 
-        $this->assertTrue($validator->validate('A'));
-        $this->assertTrue($validator->validate(null), 'null should be treated as not set');
+        $this->assertTrue($validator->validate('A', $this->context));
+        $this->assertTrue($validator->validate(null, $this->context), 'null should be treated as not set');
     }
 
     public function testRejectsValueOutsideChoices(): void
     {
         $validator = new Choice(['foo', 'bar']);
 
-        $this->assertFalse($validator->validate('baz'));
+        $this->assertFalse($validator->validate('baz', $this->context));
         $this->assertSame("The value must be one of 'foo', 'bar'.", $validator->getErrorMessage());
     }
 
@@ -27,7 +27,7 @@ class ChoiceTest extends TestCase
     {
         $validator = new Choice(['x', 'y'], multiple: true);
 
-        $this->assertFalse($validator->validate('x'));
+        $this->assertFalse($validator->validate('x', $this->context));
         $this->assertSame('The value must be an array.', $validator->getErrorMessage());
     }
 
@@ -35,8 +35,8 @@ class ChoiceTest extends TestCase
     {
         $validator = new Choice(['apple', 'banana'], multiple: true, strict: false);
 
-        $this->assertTrue($validator->validate(['apple', 'banana']));
-        $this->assertFalse($validator->validate(['apple', 'pear']));
+        $this->assertTrue($validator->validate(['apple', 'banana'], $this->context));
+        $this->assertFalse($validator->validate(['apple', 'pear'], $this->context));
         $this->assertSame(
             "Values must be chosen from 'apple', 'banana'.",
             $validator->getErrorMessage()

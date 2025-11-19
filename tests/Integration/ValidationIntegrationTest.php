@@ -25,7 +25,7 @@ class ValidationIntegrationTest extends TestCase
         };
 
         $validation = new Validation();
-        $this->assertSame([], $validation->validate($dto));
+        $this->assertTrue($validation->validate($dto)->isValid());
     }
 
     public function testInvalidDtoCollectsErrorsWithTranslations(): void
@@ -45,7 +45,7 @@ class ValidationIntegrationTest extends TestCase
             public int $score = 5;
         };
 
-        $errors = $validation->validate($dto);
+        $result = $validation->validate($dto);
 
         $this->assertSame(
             [
@@ -59,7 +59,7 @@ class ValidationIntegrationTest extends TestCase
                     'Der Wert muss zwischen 10 und 20 liegen.',
                 ],
             ],
-            $errors
+            $result->getErrors()
         );
     }
 
@@ -72,11 +72,11 @@ class ValidationIntegrationTest extends TestCase
 
         TranslationManager::set(ArrayTranslation::withDefaults('en'));
         $english = new Validation();
-        $this->assertSame('The value must be a valid email address.', $english->validate($dto)['email'][0]);
+        $this->assertSame('The value must be a valid email address.', $english->validate($dto)->getErrors()['email'][0]);
 
         TranslationManager::set(ArrayTranslation::withDefaults('de'));
         $german = new Validation();
-        $this->assertSame('Der Wert muss eine gültige E-Mail-Adresse sein.', $german->validate($dto)['email'][0]);
+        $this->assertSame('Der Wert muss eine gültige E-Mail-Adresse sein.', $german->validate($dto)->getErrors()['email'][0]);
     }
 
     public function testOptionalFieldsSkipValidationWhenNull(): void
@@ -92,10 +92,10 @@ class ValidationIntegrationTest extends TestCase
             public ?string $mandatory = null;
         };
 
-        $errors = $validation->validate($dto);
+        $result = $validation->validate($dto);
         $this->assertSame([
             'mandatory' => ['The value may not be empty.'],
-        ], $errors);
+        ], $result->getErrors());
     }
 
     public function testMultipleAttributeTypesProduceAggregatedErrors(): void
@@ -115,7 +115,7 @@ class ValidationIntegrationTest extends TestCase
             public float $level = 7.5;
         };
 
-        $errors = $validation->validate($dto);
+        $result = $validation->validate($dto);
         $this->assertSame([
             'title' => [
                 'The value may not be empty.',
@@ -127,6 +127,6 @@ class ValidationIntegrationTest extends TestCase
             'level' => [
                 'The value must be an integer.',
             ],
-        ], $errors);
+        ], $result->getErrors());
     }
 }

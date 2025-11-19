@@ -18,7 +18,7 @@ class Validation
         }
     }
 
-    public function validate(object $object): array
+    public function validate(object $object): ValidationResult
     {
         $errors = [];
         $reflection = new ReflectionClass($object);
@@ -40,6 +40,6 @@ class Validation
             }
         }
 
-        return $errors;
+        return new ValidationResult($errors);
     }
 }

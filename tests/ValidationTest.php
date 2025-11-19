@@ -19,9 +19,10 @@ class ValidationTest extends TestCase
             public string $foo = 'bar';
         };
 
-        $errors = $validation->validate($dto);
+        $result = $validation->validate($dto);
 
-        $this->assertSame(['foo' => ['broken']], $errors);
+        $this->assertTrue($result->isInvalid());
+        $this->assertSame(['foo' => ['broken']], $result->getErrors());
     }
 
     public function testUsesCustomTranslatorForMessages(): void
@@ -35,8 +36,28 @@ class ValidationTest extends TestCase
             public string $email = 'invalid';
         };
 
-        $errors = $validation->validate($dto);
-        $this->assertSame(['email' => ['Custom email message']], $errors);
+        $result = $validation->validate($dto);
+        $this->assertTrue($result->isInvalid());
+        $this->assertSame(['email' => ['Custom email message']], $result->getErrors());
+    }
+
+    public function testJsonSerialization(): void
+    {
+        $validation = new Validation();
+        $dto = new class {
+            #[AlwaysFails('error')]
+            public string $foo = 'bar';
+        };
+
+        $result = $validation->validate($dto);
+
+        $this->assertJsonStringEqualsJsonString(
+            json_encode([
+                'isValid' => false,
+                'errors' => ['foo' => ['error']],
+            ]),
+            json_encode($result)
+        );
     }
 }
 
